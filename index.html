@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>南勢國中聊天板 - GitHub Pages 版</title>
+    <title>南勢國中學生聊天版</title>
     <!-- 網站圖示設定 -->
     <link rel="icon" type="image/png" href="icon.png">
     <!-- 使用 Tailwind CSS 加快樣式開發 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-        
+
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f8fafc;
@@ -62,7 +62,7 @@
     <!-- 頂部標題 -->
     <header class="max-w-4xl mx-auto mb-10 text-center">
         <div class="inline-block bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-widest">Live on GitHub Pages</div>
-        <h1 class="text-4xl font-extrabold text-blue-900 mb-2">🏫 NSJH 校園即時看板</h1>
+        <h1 class="text-4xl font-extrabold text-blue-900 mb-2">南勢國中校園即時看板</h1>
         <p class="text-slate-500 font-medium">班級、姓名會儲存在您的瀏覽器中，方便下次發言</p>
     </header>
 
@@ -89,7 +89,7 @@
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
             <label class="flex items-center cursor-pointer group order-2 md:order-1">
                 <input type="checkbox" id="is-anonymous" class="w-5 h-5 text-blue-600 border-slate-300 rounded-lg focus:ring-blue-500 transition-all cursor-pointer">
-                <span class="ml-3 text-sm font-bold text-slate-500 group-hover:text-blue-600 transition">勾選即以「匿名同學」身份發佈</span>
+                <span class="ml-3 text-sm font-bold text-slate-500 group-hover:text-blue-600 transition">勾選即以「匿名」身份發佈</span>
             </label>
             <button onclick="submitPost()" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-12 rounded-2xl shadow-lg shadow-blue-200 transition transform active:scale-95 flex items-center justify-center order-1 md:order-2">
                 🚀 發佈動態
@@ -124,9 +124,9 @@
     <script>
         // 🛠️ 核心配置 - 已針對您的 Repo 進行設定
         const CONFIG = {
-            username: 'Robloxcooper6666', 
-            repo: 'nsjh-school-chat',         
-            refreshInterval: 30000 
+            username: 'Robloxcooper6666',
+            repo: 'nsjh-school-chat',
+            refreshInterval: 30000
         };
 
         const elements = {
@@ -166,13 +166,13 @@
 
             // 建立標題與內容
             const displayTitle = `[${userClass}] ${isAnon ? "匿名同學" : userName}`;
-            const displayBody = isAnon 
-                ? `${content}\n\n--- (系統紀錄：匿名發佈)` 
+            const displayBody = isAnon
+                ? `${content}\n\n--- (系統紀錄：匿名發佈)`
                 : `${content}\n\n--- 由 ${userClass} ${userName} 發佈`;
 
             // 導向 GitHub Issues 頁面
             const githubUrl = `https://github.com/${CONFIG.username}/${CONFIG.repo}/issues/new?title=${encodeURIComponent(displayTitle)}&body=${encodeURIComponent(displayBody)}`;
-            
+
             window.open(githubUrl, '_blank');
             elements.content.value = ""; // 清空內容框
         }
@@ -199,7 +199,7 @@
         // 4. 渲染看板介面
         function renderBoard(issues) {
             const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
-            
+
             if (issues.length === 0) {
                 elements.board.innerHTML = `<div class="col-span-full text-center py-24 bg-white rounded-3xl border-2 border-dashed border-slate-200">
                     <p class="text-slate-300 font-black text-2xl mb-2 italic">看板目前是空的</p>
