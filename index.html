@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>南實中校園聊天板 - GitHub Pages 版</title>
+    <!-- 網站圖示設定 -->
+    <link rel="icon" type="image/png" href="icon.png">
     <!-- 使用 Tailwind CSS 加快樣式開發 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-
+        
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f8fafc;
@@ -122,9 +124,9 @@
     <script>
         // 🛠️ 核心配置 - 已針對您的 Repo 進行設定
         const CONFIG = {
-            username: 'Robloxcooper6666',
-            repo: 'nsjh-school-chat',
-            refreshInterval: 30000
+            username: 'Robloxcooper6666', 
+            repo: 'nsjh-school-chat',         
+            refreshInterval: 30000 
         };
 
         const elements = {
@@ -164,13 +166,13 @@
 
             // 建立標題與內容
             const displayTitle = `[${userClass}] ${isAnon ? "匿名同學" : userName}`;
-            const displayBody = isAnon
-                ? `${content}\n\n--- (系統紀錄：匿名發佈)`
+            const displayBody = isAnon 
+                ? `${content}\n\n--- (系統紀錄：匿名發佈)` 
                 : `${content}\n\n--- 由 ${userClass} ${userName} 發佈`;
 
             // 導向 GitHub Issues 頁面
             const githubUrl = `https://github.com/${CONFIG.username}/${CONFIG.repo}/issues/new?title=${encodeURIComponent(displayTitle)}&body=${encodeURIComponent(displayBody)}`;
-
+            
             window.open(githubUrl, '_blank');
             elements.content.value = ""; // 清空內容框
         }
@@ -197,7 +199,7 @@
         // 4. 渲染看板介面
         function renderBoard(issues) {
             const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
-
+            
             if (issues.length === 0) {
                 elements.board.innerHTML = `<div class="col-span-full text-center py-24 bg-white rounded-3xl border-2 border-dashed border-slate-200">
                     <p class="text-slate-300 font-black text-2xl mb-2 italic">看板目前是空的</p>
