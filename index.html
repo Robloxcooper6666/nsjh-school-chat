@@ -3,149 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>南勢國中即時看板 | Live Chat</title>
+    <title>南勢國中即時看板 | 管理員模式</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .post-card { animation: slideIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .active-cat { background-color: #2563eb !important; color: white !important; border-color: #2563eb !important; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f1f5f9; }
+        .post-card { animation: slideIn 0.3s ease-out forwards; border-radius: 1.5rem; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active-cat { background-color: #2563eb !important; color: white !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .admin-panel { display: none; }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-10">
 
+    <!-- 導覽列 -->
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 px-4 py-4 mb-6 shadow-sm">
         <div class="max-w-xl mx-auto flex justify-between items-center">
-            <h1 class="font-black text-2xl tracking-tighter text-slate-800">南中 <span class="text-blue-600">LIVE</span></h1>
-            <div id="conn-status" class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-black text-slate-400">
-                <span class="w-2 h-2 rounded-full bg-slate-300"></span> 正在連線...
+            <h1 onclick="handleAdminTrigger()" class="font-black text-2xl tracking-tighter text-slate-800 cursor-pointer select-none">
+                南中 <span class="text-blue-600">LIVE</span>
+            </h1>
+            <div class="text-right">
+                <div id="status-tag" class="inline-flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black text-slate-400">
+                    <span id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></span>
+                    <span id="status-text">連線中</span>
+                </div>
+                <div id="online-counter" class="text-[10px] font-bold text-blue-500 mt-1 uppercase tracking-tighter">
+                    在線人數: --
+                </div>
             </div>
         </div>
     </nav>
 
-    <section class="max-w-xl mx-auto px-4 mb-10">
-        <div class="bg-white rounded-[2.5rem] p-6 shadow-xl shadow-blue-900/5 border border-white">
-            <div class="flex gap-2 overflow-x-auto no-scrollbar mb-6" id="cat-btns">
-                <button onclick="changeCat(this, '🌿 生活', 'blue')" class="active-cat whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">🌿 生活</button>
-                <button onclick="changeCat(this, '💖 告白', 'pink')" class="whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">💖 告白</button>
-                <button onclick="changeCat(this, '📚 課業', 'emerald')" class="whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">📚 課業</button>
-                <button onclick="changeCat(this, '🤫 秘密', 'purple')" class="whitespace-nowrap px-5 py-2.5 rounded-2xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">🤫 秘密</button>
+    <!-- 管理員後台區域 -->
+    <div id="admin-area" class="admin-panel max-w-xl mx-auto px-4 mb-8">
+        <div class="bg-slate-900 text-white p-6 rounded-[2rem] shadow-2xl border-4 border-slate-800">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black text-amber-400">🛡️ 管理員控制台</h2>
+                <button onclick="location.reload()" class="bg-slate-700 hover:bg-slate-600 px-4 py-1 rounded-full text-xs font-bold transition">退出</button>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="ipt-class" placeholder="年級班級 (如 701)" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-sm">
-                <input type="text" id="ipt-name" placeholder="你的暱稱" class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-sm">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 text-center">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1">當前連線總數</p>
+                    <p id="admin-conn-count" class="text-3xl font-black text-blue-400">0</p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 flex flex-col justify-center">
+                    <button onclick="clearLocalHistory()" class="text-xs text-red-400 font-bold hover:bg-red-500/10 p-2 rounded-lg transition">🗑️ 清空本地紀錄</button>
+                </div>
             </div>
-            <textarea id="ipt-content" rows="3" placeholder="在這裡分享任何事..." class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all text-sm font-medium mb-4"></textarea>
 
-            <button onclick="sendMsg()" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 rounded-[1.5rem] shadow-lg transition-all transform active:scale-[0.97]">
-                🚀 立即發佈到看板
+            <div class="text-[10px] font-mono text-slate-500">
+                <p class="mb-2">● 即時連線清單 (ClientID):</p>
+                <div id="client-list" class="bg-black/30 p-3 rounded-xl max-h-32 overflow-y-auto no-scrollbar">
+                    等待數據...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 發佈表單 -->
+    <section class="max-w-xl mx-auto px-4 mb-8">
+        <div class="bg-white rounded-[2rem] p-6 shadow-xl shadow-blue-900/5 border border-white">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar mb-6" id="cat-tabs">
+                <button onclick="setCategory(this, '🌿 生活')" class="active-cat whitespace-nowrap px-4 py-2 rounded-xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">🌿 生活</button>
+                <button onclick="setCategory(this, '💖 告白')" class="whitespace-nowrap px-4 py-2 rounded-xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">💖 告白</button>
+                <button onclick="setCategory(this, '📚 課業')" class="whitespace-nowrap px-4 py-2 rounded-xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">📚 課業</button>
+                <button onclick="setCategory(this, '🤫 秘密')" class="whitespace-nowrap px-4 py-2 rounded-xl border-2 border-slate-100 text-xs font-black text-slate-500 transition-all">🤫 秘密</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <input type="text" id="input-class" placeholder="班級" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 ring-blue-500/30 font-bold text-sm transition-all border border-transparent focus:bg-white">
+                <input type="text" id="input-name" placeholder="名字" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 ring-blue-500/30 font-bold text-sm transition-all border border-transparent focus:bg-white">
+            </div>
+            <textarea id="input-content" rows="2" placeholder="想分享什麼？" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 ring-blue-500/30 mb-4 text-sm font-medium transition-all border border-transparent focus:bg-white"></textarea>
+
+            <button onclick="broadcast()" class="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span>🚀 發佈到全校看板</span>
             </button>
         </div>
     </section>
 
-    <main id="msg-board" class="max-w-xl mx-auto px-4 space-y-4"></main>
+    <!-- 訊息動態區 -->
+    <main id="message-list" class="max-w-xl mx-auto px-4 space-y-4"></main>
 
     <script>
-        // 🔒 金鑰已配置完成
+        // 🛠️ 配置區
         const ABLY_KEY = '2eR4lg.LsxDLQ:um2A4_AugjiGw4kjkgAuw56q7AAGGTJa_rAHv0fk7UA';
+        const ADMIN_PWD = '123'; // 預設管理密碼
 
-        const ably = new Ably.Realtime(ABLY_KEY);
-        const channel = ably.channels.get('nsjh-v6-main');
+        // 隨機產生一個 Client ID 代表此連線
+        const myId = 'NSJH-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+        const ably = new Ably.Realtime({ key: ABLY_KEY, clientId: myId });
+        const channel = ably.channels.get('nsjh-main-v7');
+
         let currentCat = '🌿 生活';
-        let currentStyle = 'blue';
+        let secretCounter = 0;
 
-        // 連線狀態監聽
-        ably.connection.on('connected', () => {
-            const status = document.getElementById('conn-status');
-            status.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> 即時連線中';
-            status.classList.replace('text-slate-400', 'text-green-600');
-            status.classList.add('bg-green-50');
-        });
-
-        // 初始化與讀取緩存
-        window.onload = () => {
-            const history = JSON.parse(localStorage.getItem('nsjh_chat_history') || '[]');
-            history.forEach(renderMsg);
-
-            const user = JSON.parse(localStorage.getItem('nsjh_user_cache') || '{}');
-            if(user.cls) document.getElementById('ipt-class').value = user.cls;
-            if(user.name) document.getElementById('ipt-name').value = user.name;
-        };
-
-        function changeCat(btn, name, style) {
-            document.querySelectorAll('#cat-btns button').forEach(b => b.classList.remove('active-cat'));
-            btn.classList.add('active-cat');
-            currentCat = name; currentStyle = style;
+        // --- 管理員入口邏輯 ---
+        function handleAdminTrigger() {
+            secretCounter++;
+            if (secretCounter >= 5) {
+                const pass = prompt("請輸入管理員通行密碼：");
+                if (pass === ADMIN_PWD) {
+                    document.getElementById('admin-area').style.display = 'block';
+                    updateAdminPresence();
+                } else {
+                    alert("密碼錯誤！");
+                }
+                secretCounter = 0;
+            }
         }
 
-        // 接收訊息
-        channel.subscribe('msg', (m) => {
-            const data = m.data;
-            renderMsg(data);
-            saveToLocal(data);
+        // --- 連線與 Presence 管理 ---
+        ably.connection.on('connected', () => {
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            dot.classList.replace('bg-slate-300', 'bg-green-500');
+            dot.classList.add('animate-pulse');
+            text.innerText = "即時連線中";
+            text.classList.replace('text-slate-400', 'text-green-600');
+
+            // 加入 Presence (報到)
+            channel.presence.enter();
         });
 
-        // 發送訊息
-        function sendMsg() {
-            const cls = document.getElementById('ipt-class').value.trim();
-            const name = document.getElementById('ipt-name').value.trim();
-            const content = document.getElementById('ipt-content').value.trim();
+        // 監聽在線人數變化
+        channel.presence.subscribe(() => {
+            channel.presence.get((err, members) => {
+                if (err) return;
+                const count = members.length;
+                document.getElementById('online-counter').innerText = `目前在線: ${count} 人`;
 
-            if(!cls || !name || !content) return alert('請填寫完整內容喔！');
+                // 如果在後台，更新詳細清單
+                if(document.getElementById('admin-area').style.display === 'block') {
+                    document.getElementById('admin-conn-count').innerText = count;
+                    const listHtml = members.map(m => `<div>> ${m.clientId} ${m.clientId === myId ? '(你)' : ''}</div>`).join('');
+                    document.getElementById('client-list').innerHTML = listHtml;
+                }
+            });
+        });
+
+        // --- 訊息收發核心 ---
+        channel.subscribe('msg', (message) => {
+            displayMessage(message.data);
+            saveToLocal(message.data);
+        });
+
+        function broadcast() {
+            const cls = document.getElementById('input-class').value.trim();
+            const name = document.getElementById('input-name').value.trim();
+            const content = document.getElementById('input-content').value.trim();
+
+            if (!cls || !name || !content) return alert('不能留白唷！');
 
             const payload = {
                 id: Date.now() + Math.random().toString(36).substr(2, 4),
-                cat: currentCat, style: currentStyle,
-                cls: cls, name: name, content: content,
+                cat: currentCat, cls: cls, name: name, content: content,
                 time: new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })
             };
 
             channel.publish('msg', payload);
-            localStorage.setItem('nsjh_user_cache', JSON.stringify({cls, name}));
-            document.getElementById('ipt-content').value = '';
+            localStorage.setItem('nsjh_user', JSON.stringify({cls, name}));
+            document.getElementById('input-content').value = '';
         }
 
-        function renderMsg(data) {
+        function displayMessage(data) {
             if(document.getElementById('msg-' + data.id)) return;
-
-            const board = document.getElementById('msg-board');
-            const colorMap = {
-                blue: 'border-blue-500', pink: 'border-pink-500',
-                emerald: 'border-emerald-500', purple: 'border-purple-500'
-            };
-
+            const list = document.getElementById('message-list');
             const html = `
-                <div id="msg-${data.id}" class="post-card bg-white p-6 rounded-[2rem] border-l-[8px] ${colorMap[data.style]} shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-lg">${data.cat}</span>
-                        <span class="text-[9px] font-bold text-slate-300 italic">${data.time}</span>
+                <div id="msg-${data.id}" class="post-card bg-white p-6 shadow-sm border border-slate-100 flex flex-col">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] font-black text-slate-400 tracking-widest uppercase bg-slate-50 px-2 py-1 rounded-md border border-slate-100">${data.cat}</span>
+                        <span class="text-[9px] font-bold text-slate-300">${data.time}</span>
                     </div>
-                    <p class="text-slate-700 font-bold text-base leading-relaxed mb-6">${escapeHtml(data.content)}</p>
-                    <div class="flex items-center justify-between border-t border-slate-50 pt-4">
-                        <span class="text-[11px] font-black text-blue-600/50 italic">${escapeHtml(data.cls)} · ${escapeHtml(data.name)}</span>
-                        <button onclick="this.parentElement.parentElement.style.opacity=0.3" class="text-[10px] text-slate-300 hover:text-red-400">檢舉</button>
+                    <p class="text-slate-700 font-bold text-[15px] mb-4 leading-relaxed">${escape(data.content)}</p>
+                    <div class="text-[10px] font-black text-blue-600/50 italic border-t border-slate-50 pt-3">
+                        ${escape(data.cls)} · ${escape(data.name)}
                     </div>
                 </div>
             `;
-            board.insertAdjacentHTML('afterbegin', html);
+            list.insertAdjacentHTML('afterbegin', html);
+        }
+
+        // --- 系統輔助 ---
+        function setCategory(btn, name) {
+            document.querySelectorAll('#cat-tabs button').forEach(b => b.classList.remove('active-cat'));
+            btn.classList.add('active-cat');
+            currentCat = name;
         }
 
         function saveToLocal(data) {
-            let history = JSON.parse(localStorage.getItem('nsjh_chat_history') || '[]');
+            let history = JSON.parse(localStorage.getItem('nsjh_chat_history_v7') || '[]');
             history.push(data);
-            if(history.length > 50) history.shift();
-            localStorage.setItem('nsjh_chat_history', JSON.stringify(history));
+            if(history.length > 40) history.shift();
+            localStorage.setItem('nsjh_chat_history_v7', JSON.stringify(history));
         }
 
-        function escapeHtml(str) {
-            const p = document.createElement('p');
-            p.textContent = str;
-            return p.innerHTML;
+        function clearLocalHistory() {
+            if(confirm("確定要清除您設備上的歷史紀錄嗎？（不影響他人）")) {
+                localStorage.removeItem('nsjh_chat_history_v7');
+                location.reload();
+            }
         }
+
+        function escape(s) {
+            const t = document.createElement('p');
+            t.textContent = s;
+            return t.innerHTML;
+        }
+
+        window.onload = () => {
+            const history = JSON.parse(localStorage.getItem('nsjh_chat_history_v7') || '[]');
+            history.forEach(displayMessage);
+            const user = JSON.parse(localStorage.getItem('nsjh_user') || '{}');
+            if(user.cls) document.getElementById('input-class').value = user.cls;
+            if(user.name) document.getElementById('input-name').value = user.name;
+        };
     </script>
 </body>
 </html>
