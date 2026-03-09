@@ -18,25 +18,28 @@
 </head>
 <body class="min-h-screen pb-10">
 
-    <!-- 導覽列 -->
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 px-4 py-4 mb-6 shadow-sm">
         <div class="max-w-xl mx-auto flex justify-between items-center">
             <h1 onclick="handleAdminTrigger()" class="font-black text-2xl tracking-tighter text-slate-800 cursor-pointer select-none">
                 南勢國中即時看板 <span class="text-blue-600">LIVE</span>
             </h1>
-            <div class="text-right">
-                <div id="status-tag" class="inline-flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black text-slate-400">
-                    <span id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></span>
-                    <span id="status-text">連線中</span>
-                </div>
-                <div id="online-counter" class="text-[10px] font-bold text-blue-500 mt-1 uppercase tracking-tighter">
-                    在線人數: --
+            <div class="flex items-center gap-4">
+                <a href="https://robloxcooper6666.github.io/nsjh-school-chat/help.html" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition-colors shadow-sm" title="幫助說明">
+                    <span class="font-bold text-lg">?</span>
+                </a>
+                <div class="text-right">
+                    <div id="status-tag" class="inline-flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black text-slate-400">
+                        <span id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></span>
+                        <span id="status-text">連線中</span>
+                    </div>
+                    <div id="online-counter" class="text-[10px] font-bold text-blue-500 mt-1 uppercase tracking-tighter">
+                        在線人數: --
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- 管理員後台區域 -->
     <div id="admin-area" class="admin-panel max-w-xl mx-auto px-4 mb-8">
         <div class="bg-slate-900 text-white p-6 rounded-[2rem] shadow-2xl border-4 border-slate-800">
             <div class="flex justify-between items-center mb-6">
@@ -63,7 +66,6 @@
         </div>
     </div>
 
-    <!-- 發佈表單 -->
     <section class="max-w-xl mx-auto px-4 mb-8">
         <div class="bg-white rounded-[2rem] p-6 shadow-xl shadow-blue-900/5 border border-white">
             <div class="flex gap-2 overflow-x-auto no-scrollbar mb-6" id="cat-tabs">
@@ -85,7 +87,6 @@
         </div>
     </section>
 
-    <!-- 訊息動態區 -->
     <main id="message-list" class="max-w-xl mx-auto px-4 space-y-4"></main>
 
     <script>
@@ -225,4 +226,3 @@
     </script>
 </body>
 </html>
-
