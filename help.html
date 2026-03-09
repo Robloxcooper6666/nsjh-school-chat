@@ -3,157 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>幫助中心 - 南勢國中校園看板</title>
-    <!-- 網站圖示設定 -->
-    <link rel="icon" type="image/png" href="icon.png">
+    <title>幫助中心 | 南勢國中即時看板</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f8fafc;
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f1f5f9; }
+        .help-card { transition: all 0.3s ease; }
+        .help-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .logic-step { position: relative; }
+        .logic-step:not(:last-child)::after { 
+            content: '→'; 
+            position: absolute; 
+            right: -1.5rem; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: #cbd5e1; 
+            font-weight: 900;
         }
-        .help-card {
-            transition: transform 0.2s ease;
-        }
-        .help-card:hover {
-            transform: translateY(-2px);
+        @media (max-width: 768px) {
+            .logic-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -1.5rem; transform: translateX(-50%); }
         }
     </style>
 </head>
 <body class="min-h-screen text-slate-800 pb-20">
 
     <!-- 頂部導航 -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center text-blue-600 font-bold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <a href="index.html" class="flex items-center text-blue-600 font-black text-sm hover:opacity-70 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                 </svg>
                 返回看板
             </a>
-            <span class="text-slate-400 font-bold text-sm">NSJH Help Center</span>
+            <span class="text-slate-400 font-black text-[10px] tracking-widest uppercase text-right">NSJH LIVE<br>Help Center</span>
         </div>
     </nav>
 
     <!-- 標題區 -->
-    <header class="bg-blue-600 py-16 px-6 text-center text-white">
-        <h1 class="text-3xl md:text-4xl font-black mb-4">需要幫助嗎？</h1>
-        <p class="text-blue-100 font-medium">這裡有你開始發文前需要知道的一切</p>
+    <header class="bg-slate-900 py-20 px-6 text-center text-white relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-tighter">技術與說明</h1>
+            <p class="text-slate-400 font-bold max-w-md mx-auto">了解「南中 LIVE」後台運作的黑科技與使用規範</p>
+        </div>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-blue-600/20 to-transparent"></div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-6 -mt-8">
-        <!-- 核心步驟 -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="help-card bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 text-center">
-                <div class="bg-orange-100 text-orange-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
-                </div>
-                <h3 class="font-black text-slate-800 mb-2">1. 註冊帳號</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">發文前請先擁有 GitHub 帳號。它是看板的資料庫來源。</p>
-            </div>
-            <div class="help-card bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 text-center">
-                <div class="bg-blue-100 text-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <h3 class="font-black text-slate-800 mb-2">2. 安裝 App</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">推薦手機安裝 GitHub App，點擊發布後體驗會更順暢。</p>
-            </div>
-            <div class="help-card bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 text-center">
-                <div class="bg-green-100 text-green-600 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <h3 class="font-black text-slate-800 mb-2">3. 完成發布</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">在 GitHub 頁面點擊「Submit new issue」後，訊息才會同步。</p>
-            </div>
-        </div>
-
-        <!-- 重要聲明 -->
+    <main class="max-w-4xl mx-auto px-6 -mt-10 relative z-10">
+        
+        <!-- 新增章節：運作原理 -->
         <section class="mb-12">
-            <div class="bg-amber-50 border-2 border-amber-200 rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row items-center gap-6">
-                <div class="bg-amber-200 text-amber-700 p-4 rounded-3xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            <div class="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border border-white">
+                <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-indigo-500 rounded-full mr-4"></span>
+                    運作原理：為什麼訊息能秒傳？
+                </h2>
+                
+                <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-12">
+                    <div class="logic-step bg-slate-50 p-6 rounded-3xl border border-slate-100 flex-1 text-center">
+                        <div class="text-2xl mb-2">📱</div>
+                        <div class="font-black text-slate-800 text-sm mb-1">你的裝置 (Publisher)</div>
+                        <div class="text-[11px] text-slate-500 font-medium">按下發布後，訊息被打包成 JSON 格式</div>
+                    </div>
+                    <div class="logic-step bg-indigo-50 p-6 rounded-3xl border border-indigo-100 flex-1 text-center">
+                        <div class="text-2xl mb-2">☁️</div>
+                        <div class="font-black text-indigo-600 text-sm mb-1">Ably 全球數據網</div>
+                        <div class="text-[11px] text-indigo-400 font-medium">雲端中樞即時處理並派發訊息</div>
+                    </div>
+                    <div class="logic-step bg-slate-50 p-6 rounded-3xl border border-slate-100 flex-1 text-center">
+                        <div class="text-2xl mb-2">💻</div>
+                        <div class="font-black text-slate-800 text-sm mb-1">所有在線同學 (Subscriber)</div>
+                        <div class="text-[11px] text-slate-500 font-medium">裝置監聽到新訊號，立刻刷新 UI</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+                    <div class="space-y-3">
+                        <h4 class="font-black text-slate-800 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 什麼是 Pub/Sub 技術？
+                        </h4>
+                        <p class="text-slate-500 leading-relaxed font-medium">
+                            這是一種「發布者/訂閱者」模式。就像收音機電台，我們建立了一個頻道 <code class="bg-slate-100 px-1 rounded text-blue-600">nsjh-main</code>，只要你開啟網頁，你的手機就會像收音機一樣持續接收這個頻道的訊號。
+                        </p>
+                    </div>
+                    <div class="space-y-3">
+                        <h4 class="font-black text-slate-800 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 為什麼不需要資料庫？
+                        </h4>
+                        <p class="text-slate-500 leading-relaxed font-medium">
+                            為了速度，我們使用「串流」而非傳統「讀取資料庫」。訊息直接在網際網路中流動，不經過漫長的儲存與查詢過程。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 免責聲明 -->
+        <section class="mb-12">
+            <div class="bg-white border-4 border-amber-400 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 shadow-2xl shadow-amber-900/10">
+                <div class="bg-amber-400 text-white p-5 rounded-[2rem] shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-amber-900 mb-2">重要免責聲明</h2>
-                    <p class="text-amber-800 font-medium leading-relaxed">
-                        本網站「南勢國中校園即時看板」為<b>學生自主開發之非官方交流空間</b>，與新北市立南勢國民中學<b>校方行政單位、教師團隊無任何關聯</b>。本網站不代表校方立場，亦非學校官方發布訊息之管道。
+                    <h2 class="text-2xl font-black text-slate-900 mb-3">重要聲明與免責</h2>
+                    <p class="text-slate-600 font-bold leading-relaxed mb-4">
+                        本網站「南中 LIVE」為 <span class="text-blue-600">南勢國中學生自主開發</span> 之非官方交流空間，與校方行政單位、教師團隊 <span class="text-red-500 underline decoration-2 underline-offset-4">無任何關聯</span>。
+                    </p>
+                    <p class="text-sm text-slate-400 font-medium">
+                        目前處於 Beta 測試階段。所有言論不代表開發團隊或校方立場，請使用者為自己的發言負責。
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- 詳細說明區 -->
+        <!-- FAQ -->
         <section class="space-y-8">
-            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100">
-                <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center">
+            <div class="bg-white rounded-[3rem] p-8 md:p-12 shadow-sm border border-slate-100">
+                <h2 class="text-2xl font-black text-slate-900 mb-10 flex items-center">
                     <span class="w-2 h-8 bg-blue-600 rounded-full mr-4"></span>
                     常見問題 (FAQ)
                 </h2>
 
-                <div class="space-y-8">
-                    <div>
-                        <h4 class="font-bold text-lg text-blue-600 mb-2 italic">Q: 為什麼點擊「發布」後會跳到 GitHub？</h4>
-                        <p class="text-slate-600 leading-relaxed">
-                            為了維持看板的免費運作與資料透明，我們將 GitHub 的 Issues 功能作為「留言資料庫」。跳轉至 GitHub 是為了讓系統確認是你在發文，並將內容正式寫入資料庫中。
+                <div class="space-y-10">
+                    <div class="group">
+                        <h4 class="font-black text-lg text-blue-600 mb-3 transition-all group-hover:translate-x-1 underline decoration-blue-100 underline-offset-8">Q: 我的資訊安全嗎？</h4>
+                        <p class="text-slate-600 font-bold leading-relaxed">
+                            我們不會收集你的電話、姓名或身分證字號。系統僅會產生一組隨機代碼（例如 NSJH-A1B2C3）來區分不同的連線。這組代碼與你的真實身分無法直接對聯。
                         </p>
                     </div>
 
-                    <div>
-                        <h4 class="font-bold text-lg text-blue-600 mb-2 italic">Q: 匿名發布真的匿名嗎？</h4>
-                        <p class="text-slate-600 leading-relaxed">
-                            看板介面會顯示為「匿名同學」，但你的 GitHub 帳號名稱仍會出現在 Issue 的原始紀錄中。這能防止惡意霸凌，同時提供一定的隱私感。請遵守校園禮儀，切勿發布攻擊性言論。
+                    <div class="group">
+                        <h4 class="font-black text-lg text-blue-600 mb-3 transition-all group-hover:translate-x-1 underline decoration-blue-100 underline-offset-8">Q: 「在線人數」是準確的嗎？</h4>
+                        <p class="text-slate-600 font-bold leading-relaxed">
+                            是的，這是透過 Ably 的 Presence 服務計算的。只要你開啟網頁，雲端伺服器就會計算一個活躍連線，當你完全關閉網頁 15 秒後，人數會自動扣除。
                         </p>
                     </div>
 
-                    <div>
-                        <h4 class="font-bold text-lg text-blue-600 mb-2 italic">Q: 發布後多久會出現在看板上？</h4>
-                        <p class="text-slate-600 leading-relaxed">
-                            看板會每 30 秒自動刷新一次。一旦你在 GitHub 成功點擊「Submit」，通常在一分鐘內就能在首頁看到。
-                        </p>
-                    </div>
-
-                    <div>
-                        <h4 class="font-bold text-lg text-blue-600 mb-2 italic">Q: 訊息可以刪除或修改嗎？</h4>
-                        <p class="text-slate-600 leading-relaxed">
-                            如果你需要刪除或修改發言，你需要登入 GitHub 找到該則 Issue 進行編輯。看板會同步顯示修改後的結果。
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- App 下載區 -->
-            <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white overflow-hidden relative">
-                <div class="relative z-10">
-                    <h2 class="text-2xl font-black mb-6">行動裝置優化</h2>
-                    <p class="text-slate-400 mb-8 max-w-lg leading-relaxed">
-                        如果你是使用 iPhone 或 Android 手機，強烈建議安裝 GitHub App 以獲得最佳體驗：
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="https://apps.apple.com/app/github/id1477376905" target="_blank" class="bg-white text-slate-900 px-6 py-3 rounded-2xl font-bold flex items-center justify-center hover:bg-slate-100 transition">
-                            Apple App Store
-                        </a>
-                        <a href="https://play.google.com/store/apps/details?id=com.github.android" target="_blank" class="bg-white text-slate-900 px-6 py-3 rounded-2xl font-bold flex items-center justify-center hover:bg-slate-100 transition">
-                            Google Play Store
+                    <div class="group">
+                        <h4 class="font-black text-lg text-blue-600 mb-3 transition-all group-hover:translate-x-1 underline decoration-blue-100 underline-offset-8">Q: 發現 Bug 該去哪裡回報？</h4>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfVdJKPBpUTQW44wfvPzzb6Oo3dEpRyJDZhlaavA51dYOK5Xw/viewform?usp=publish-editor" target="_blank" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-blue-50 text-blue-600 px-6 py-3 rounded-2xl font-black text-sm transition-all border border-slate-200 mt-4">
+                            📝 填寫問題回報表單
                         </a>
                     </div>
                 </div>
-                <!-- 裝飾背景 -->
-                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl"></div>
             </div>
         </section>
 
         <footer class="mt-16 text-center">
-            <p class="text-slate-400 text-sm font-medium italic">
-                NSJH School Chat Project &copy; 2024 | 由南勢國中學生團隊獨立開發
+            <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
+                NSJH LIVE Project · Beta v7.0
+            </p>
+            <p class="text-slate-300 text-[9px] font-medium">
+                Tech: Ably Realtime Framework | Pub/Sub Logic
             </p>
         </footer>
     </main>
