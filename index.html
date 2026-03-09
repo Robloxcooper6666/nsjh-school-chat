@@ -14,9 +14,22 @@
         .active-cat { background-color: #2563eb !important; color: white !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .admin-panel { display: none; }
+
+        /* 右下角幫助按鈕樣式 */
+        .help-fab {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .help-fab:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
     </style>
 </head>
-<body class="min-h-screen pb-10">
+<body class="min-h-screen pb-20">
 
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 px-4 py-4 mb-6 shadow-sm">
         <div class="max-w-xl mx-auto flex justify-between items-center">
@@ -24,9 +37,6 @@
                 南勢國中即時看板 <span class="text-blue-600">LIVE</span>
             </h1>
             <div class="flex items-center gap-4">
-                <a href="https://robloxcooper6666.github.io/nsjh-school-chat/help.html" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition-colors shadow-sm" title="幫助說明">
-                    <span class="font-bold text-lg">?</span>
-                </a>
                 <div class="text-right">
                     <div id="status-tag" class="inline-flex items-center gap-2 bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black text-slate-400">
                         <span id="status-dot" class="w-2 h-2 rounded-full bg-slate-300"></span>
@@ -89,28 +99,31 @@
 
     <main id="message-list" class="max-w-xl mx-auto px-4 space-y-4"></main>
 
+    <a href="https://robloxcooper6666.github.io/nsjh-school-chat/help.html" 
+       target="_blank" 
+       class="help-fab flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg border-2 border-white/20 active:scale-95">
+        <span class="text-lg">❓</span>
+        <span class="font-black text-sm tracking-wider">幫助中心</span>
+    </a>
+
     <script>
         // 🛠️ 配置區
         const ABLY_KEY = '2eR4lg.LsxDLQ:um2A4_AugjiGw4kjkgAuw56q7AAGGTJa_rAHv0fk7UA';
         const ADMIN_PWD = '123'; // 預設管理密碼
 
-        // 隨機產生一個 Client ID 代表此連線
         const myId = 'NSJH-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-
         const ably = new Ably.Realtime({ key: ABLY_KEY, clientId: myId });
         const channel = ably.channels.get('nsjh-main-v7');
 
         let currentCat = '🌿 生活';
         let secretCounter = 0;
 
-        // --- 管理員入口邏輯 ---
         function handleAdminTrigger() {
             secretCounter++;
             if (secretCounter >= 5) {
                 const pass = prompt("請輸入管理員通行密碼：");
                 if (pass === ADMIN_PWD) {
                     document.getElementById('admin-area').style.display = 'block';
-                    updateAdminPresence();
                 } else {
                     alert("密碼錯誤！");
                 }
@@ -118,7 +131,6 @@
             }
         }
 
-        // --- 連線與 Presence 管理 ---
         ably.connection.on('connected', () => {
             const dot = document.getElementById('status-dot');
             const text = document.getElementById('status-text');
@@ -126,19 +138,15 @@
             dot.classList.add('animate-pulse');
             text.innerText = "即時連線中";
             text.classList.replace('text-slate-400', 'text-green-600');
-
-            // 加入 Presence (報到)
             channel.presence.enter();
         });
 
-        // 監聽在線人數變化
         channel.presence.subscribe(() => {
             channel.presence.get((err, members) => {
                 if (err) return;
                 const count = members.length;
                 document.getElementById('online-counter').innerText = `目前在線: ${count} 人`;
 
-                // 如果在後台，更新詳細清單
                 if(document.getElementById('admin-area').style.display === 'block') {
                     document.getElementById('admin-conn-count').innerText = count;
                     const listHtml = members.map(m => `<div>> ${m.clientId} ${m.clientId === myId ? '(你)' : ''}</div>`).join('');
@@ -147,7 +155,6 @@
             });
         });
 
-        // --- 訊息收發核心 ---
         channel.subscribe('msg', (message) => {
             displayMessage(message.data);
             saveToLocal(message.data);
@@ -189,7 +196,6 @@
             list.insertAdjacentHTML('afterbegin', html);
         }
 
-        // --- 系統輔助 ---
         function setCategory(btn, name) {
             document.querySelectorAll('#cat-tabs button').forEach(b => b.classList.remove('active-cat'));
             btn.classList.add('active-cat');
