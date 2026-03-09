@@ -15,21 +15,27 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .admin-panel { display: none; }
 
-        /* 右下角幫助按鈕樣式 */
-        .help-fab {
+        /* 右下角按鈕群組樣式 */
+        .fab-container {
             position: fixed;
             bottom: 1.5rem;
             right: 1.5rem;
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+        .fab-button {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .help-fab:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        .fab-button:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
         }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body class="min-h-screen pb-40">
 
     <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 px-4 py-4 mb-6 shadow-sm">
         <div class="max-w-xl mx-auto flex justify-between items-center">
@@ -99,17 +105,25 @@
 
     <main id="message-list" class="max-w-xl mx-auto px-4 space-y-4"></main>
 
-    <a href="https://robloxcooper6666.github.io/nsjh-school-chat/help.html" 
-       target="_blank" 
-       class="help-fab flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg border-2 border-white/20 active:scale-95">
-        <span class="text-lg">❓</span>
-        <span class="font-black text-sm tracking-wider">幫助中心</span>
-    </a>
+    <div class="fab-container">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfVdJKPBpUTQW44wfvPzzb6Oo3dEpRyJDZhlaavA51dYOK5Xw/viewform?usp=header" 
+           target="_blank" 
+           class="fab-button flex items-center gap-2 bg-amber-500 text-white px-5 py-3 rounded-full shadow-lg border-2 border-white/20 active:scale-95">
+            <span class="text-lg">⚠️</span>
+            <span class="font-black text-sm tracking-wider">問題回報</span>
+        </a>
+        <a href="https://robloxcooper6666.github.io/nsjh-school-chat/help.html" 
+           target="_blank" 
+           class="fab-button flex items-center gap-2 bg-blue-600 text-white px-5 py-3 rounded-full shadow-lg border-2 border-white/20 active:scale-95">
+            <span class="text-lg">❓</span>
+            <span class="font-black text-sm tracking-wider">幫助中心</span>
+        </a>
+    </div>
 
     <script>
         // 🛠️ 配置區
         const ABLY_KEY = '2eR4lg.LsxDLQ:um2A4_AugjiGw4kjkgAuw56q7AAGGTJa_rAHv0fk7UA';
-        const ADMIN_PWD = '123'; // 預設管理密碼
+        const ADMIN_PWD = '123'; 
 
         const myId = 'NSJH-' + Math.random().toString(36).substr(2, 6).toUpperCase();
         const ably = new Ably.Realtime({ key: ABLY_KEY, clientId: myId });
@@ -146,7 +160,6 @@
                 if (err) return;
                 const count = members.length;
                 document.getElementById('online-counter').innerText = `目前在線: ${count} 人`;
-
                 if(document.getElementById('admin-area').style.display === 'block') {
                     document.getElementById('admin-conn-count').innerText = count;
                     const listHtml = members.map(m => `<div>> ${m.clientId} ${m.clientId === myId ? '(你)' : ''}</div>`).join('');
@@ -164,15 +177,12 @@
             const cls = document.getElementById('input-class').value.trim();
             const name = document.getElementById('input-name').value.trim();
             const content = document.getElementById('input-content').value.trim();
-
             if (!cls || !name || !content) return alert('不能留白唷！');
-
             const payload = {
                 id: Date.now() + Math.random().toString(36).substr(2, 4),
                 cat: currentCat, cls: cls, name: name, content: content,
                 time: new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })
             };
-
             channel.publish('msg', payload);
             localStorage.setItem('nsjh_user', JSON.stringify({cls, name}));
             document.getElementById('input-content').value = '';
