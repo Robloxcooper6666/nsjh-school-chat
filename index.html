@@ -8,7 +8,6 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* 保留你原有的所有 CSS 樣式 */
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f8fafc;
@@ -116,47 +115,42 @@
     <main id="message-list" class="max-w-xl mx-auto px-4 space-y-4"></main>
 
     <script>
-        // 2. 設定你的樹莓派伺服器地址
-        // 當你完成內網穿透後，把 localhost 改成你的 Cloudflare 網址
-        const SERVER_URL = 'http://localhost:3000'; 
+        // 【核心修改】自動抓取當前網域作為伺服器位址，不再需要手動改
+        const SERVER_URL = window.location.origin; 
         const socket = io(SERVER_URL);
 
         const ADMIN_PWD = '123';
-        const HISTORY_KEY = 'nsjh_chat_history_v7';
         const USER_KEY = 'nsjh_user';
         let currentCat = '🌿 生活';
         let secretCounter = 0;
         let modeTimer = null;
 
-        // 連線成功
+        // 連線成功 UI 更新
         socket.on('connect', () => {
             document.getElementById('status-dot').className = "w-2 h-2 rounded-full status-dot-online animate-pulse";
             document.getElementById('status-text').innerText = "Pi Connected";
             document.getElementById('online-counter').innerText = `正在讀取歷史紀錄...`;
         });
 
-        // 3. 核心：接收從伺服器來的歷史訊息
+        // 接收歷史訊息
         socket.on('history', (messages) => {
-            document.getElementById('message-list').innerHTML = ''; // 清空目前的
-            messages.forEach(msg => {
-                displayMessage(msg);
-            });
+            document.getElementById('message-list').innerHTML = '';
+            messages.forEach(msg => displayMessage(msg));
             document.getElementById('online-counter').innerText = `已連接樹莓派`;
         });
 
-        // 4. 接收即時訊息
+        // 接收即時訊息
         socket.on('chat message', (data) => {
             syncRemoteMode(data);
             displayMessage(data);
         });
 
-        // 更新在線人數 (由伺服器推送)
+        // 在線人數監測
         socket.on('user count', (count) => {
             document.getElementById('online-counter').innerText = `目前在線 ${count} 位同學`;
             document.getElementById('admin-conn-count').innerText = count;
         });
 
-        // 發送訊息到樹莓派
         function broadcast() {
             const cls = document.getElementById('input-class').value.trim();
             const name = document.getElementById('input-name').value.trim();
@@ -179,8 +173,6 @@
 
             const btn = document.getElementById('send-btn');
             btn.disabled = true;
-
-            // 透過 Socket 發送
             socket.emit('chat message', payload);
             
             document.getElementById('input-content').value = '';
@@ -189,15 +181,11 @@
             if (isGP || is67) startModeTimer();
         }
 
-        // --- 以下保留你原有的 UI 邏輯功能 ---
-
         function handleAdminTrigger() {
             secretCounter++;
             if (secretCounter >= 5) {
                 const pass = prompt("系統模式切換：");
-                if (pass === ADMIN_PWD) {
-                    document.getElementById('admin-area').style.display = 'block';
-                }
+                if (pass === ADMIN_PWD) document.getElementById('admin-area').style.display = 'block';
                 secretCounter = 0;
             }
         }
